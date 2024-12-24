@@ -2,16 +2,16 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ] 
+      
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      
+      - uses: actions/checkout@v2
 
       - name: Get Date
         id: get-date
@@ -30,6 +30,11 @@ jobs:
           path: .buildozer
           key: buildozer-config-${{ hashFiles('buildozer.spec') }}
 
+      - uses: actions/cache@v2
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+      
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
